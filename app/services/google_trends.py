@@ -1,8 +1,8 @@
 import datetime as dt
 from pytrends.request import TrendReq
 import pandas as pd
-
-
+from fastapi import APIRouter
+router = APIRouter()
 
 
 def get_interest(query, region='', resolution='WORLD', from_date='', to_date='',language='en-US' ):
