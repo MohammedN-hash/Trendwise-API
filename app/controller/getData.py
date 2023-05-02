@@ -1,6 +1,5 @@
 
 from fastapi import APIRouter
-from fastapi import  File, UploadFile
 from services.reddit import get_reddits_with_comments
 from services.google_trends import get_interest
 

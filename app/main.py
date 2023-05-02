@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from controller.getData import router as get_data
+
 import uvicorn
 
 
@@ -19,6 +19,4 @@ def get_request():
     return "Healthy"
 
 
-routes=[get_data]
-for route in routes:
-  app.include_router(route)
+
