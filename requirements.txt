@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+starlette
+requests
+
+
+langdetect
+
+praw
+
+pytrends
