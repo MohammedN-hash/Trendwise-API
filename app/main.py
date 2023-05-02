@@ -1,6 +1,4 @@
 from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
-from starlette.middleware.cors import CORSMiddleware
 from controller.getData import router as get_data
 import uvicorn
 
@@ -11,17 +9,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-allowed_methods = ["POST", "GET"]
-
-app.add_middleware(
-    CORSMiddleware, allow_origins=['*'], allow_methods=allowed_methods, allow_headers=["*"])
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=int(os.environ.get("UVICORN_PORT", 8080)), reload=True)
+  uvicorn.run("server.api:app", host="0.0.0.0", port=8000, reload=True)
 
+  
 @app.get("/healthz")
 def get_request():
-    return PlainTextResponse("Healthy")
+    return "Healthy"
 
 
 routes=[get_data]
