@@ -2,7 +2,7 @@
   "builds": [
     {
       "src": "app/main.py",
-      "use": "docker://python:3.9-slim"
+      "use": "@now/python"
     }
   ],
   "routes": [
