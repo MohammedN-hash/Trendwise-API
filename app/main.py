@@ -5,8 +5,8 @@ from controller.getData import router as get_data
 
 
 app = FastAPI(
-    title="Text_to_video",
-    description="Create a video from text",
+    title="TrendWise",
+    description="Anlys topic and get trends",
     version="1.0.0"
 )
 
