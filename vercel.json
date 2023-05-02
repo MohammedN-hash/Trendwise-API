@@ -2,8 +2,7 @@
   "builds": [
     {
       "src": "app/main.py",
-      "use": "@python",
-      "command": "pip install -r requirements.txt && python app/main.py"
+      "use": "@python"
     }
   ],
   "routes": [
@@ -11,5 +10,6 @@
   ],
   "env": {
     "UVICORN_PORT": "8080"
-  }
+  },
+  "buildCommand": "pip install -r requirements.txt && python app/main.py"
 }
