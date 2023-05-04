@@ -2,6 +2,7 @@ import pandas as pd
 from services.util import is_english
 import praw
 import datetime as dt
+from emotion_classfication_model.emotion_classfication_model import  get_emotion
 
 #Reddit Authentication
 
@@ -46,7 +47,8 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
                       'created_utc': post.created_utc,
                       'num_comments': post.num_comments,
                       'permalink': f"https://www.reddit.com{post.permalink}",
-                      'score': post.score})
+                      'score': post.score,
+                      'emotion':get_emotion(post.title)})
       # iterate over the search results and extract the desired data
           for comment in post.comments.list():
               if i == comment_limit:
@@ -61,6 +63,7 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
                               'created_utc': comment.created_utc,
                               'body': comment.body,
                               'ups': comment.ups,
-                              'downs': comment.downs})
+                              'downs': comment.downs,
+                              'emotion':get_emotion(comment.body)})
     # create Pandas DataFrame from the collected data
     return  pd.DataFrame(posts).values.tolist(), pd.DataFrame(comments).values.tolist()

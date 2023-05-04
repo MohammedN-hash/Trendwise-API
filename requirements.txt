@@ -6,3 +6,8 @@ uvicorn
 langdetect
 pytrends
 praw
+
+
+
+transformers
+TensorFlow
