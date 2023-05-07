@@ -13,7 +13,7 @@ password='5ubSTC5bwAndYbW'
 base_url = 'https://www.reddit.com/'
 user_agent='EmoMetrics0.1'
 
-def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',post_limit = 100):
+def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',post_limit = 100,comment_limit=100):
     # set up your Reddit API credentials
     reddit = praw.Reddit(client_id=CLIENT_ID,
                         client_secret=SECRET_TOKEN,
@@ -30,7 +30,10 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
     start_epoch = int(dt.datetime.timestamp(dt.datetime.strptime(fromDate, '%Y-%m-%d'))) if fromDate != '' else last_week   
     end_epoch = int(dt.datetime.timestamp(dt.datetime.strptime(toDate, '%Y-%m-%d'))) if toDate != '' else int(dt.datetime.now().timestamp())
 
-    comment_limit = 500
+    comment_limit = comment_limit
+
+    post_limit=int(post_limit)
+    comment_limit=int(comment_limit)
 
     # perform the search
     # create an empty list to store the data
@@ -42,7 +45,7 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
         i=0
         if is_english(post.title): 
           posts.append({'id': post.id,
-                      'title': post.title,
+                      'text': post.title,
                       'author': post.author.name if post.author else '[deleted]',
                       'created_utc': post.created_utc,
                       'num_comments': post.num_comments,
@@ -61,9 +64,9 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
                               'id': comment.id,
                               'author': comment.author.name if comment.author else '[deleted]',
                               'created_utc': comment.created_utc,
-                              'body': comment.body,
+                              'text': comment.body,
                               'ups': comment.ups,
                               'downs': comment.downs,
                               'emotion':get_emotion(comment.body)})
     # create Pandas DataFrame from the collected data
-    return  pd.DataFrame(posts).values.tolist(), pd.DataFrame(comments).values.tolist()
+    return  posts, comments
