@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 from controller.getData import router as get_data
 from starlette.middleware.cors import CORSMiddleware
-
+import os
 
 
 app = FastAPI(
