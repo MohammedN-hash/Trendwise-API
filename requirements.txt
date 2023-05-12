@@ -11,5 +11,3 @@ praw
 
 transformers
 TensorFlow
-
-streamlit
