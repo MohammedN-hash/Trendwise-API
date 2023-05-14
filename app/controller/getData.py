@@ -17,9 +17,9 @@ router = APIRouter(
 
 
 @router.get('/getAnalysis')
-async def get_analysis(query,post_limit,comment_limit):
+async def get_analysis(query, fromDate, toDate, subreddit,post_limit,comment_limit):
 
-    reddit_posts_list,reddit_comments_list=get_all_classfied_data(query, fromDate='', toDate='', subreddit='all',post_limit = post_limit,comment_limit=comment_limit)
+    reddit_posts_list,reddit_comments_list=get_all_classfied_data(query, fromDate, toDate, subreddit,post_limit,comment_limit)
     # convert the results to a JSON-serializable format using jsonable_encoder
     results = {"posts": jsonable_encoder(reddit_posts_list), "comments": jsonable_encoder(reddit_comments_list)}
     

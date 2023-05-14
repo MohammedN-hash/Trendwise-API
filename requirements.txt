@@ -5,9 +5,18 @@ starlette
 
 langdetect
 pytrends
+
+
+
 praw
 
 
 
 transformers
 TensorFlow
+
+
+
+
+feedparser
+bs4

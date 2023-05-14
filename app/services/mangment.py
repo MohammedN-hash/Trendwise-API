@@ -1,4 +1,5 @@
 from services.reddit import get_reddits_with_comments
+from services.news import search_google_news
 from emotion_classfication_model.emotion_classfication_model import  get_emotion
 
 
@@ -9,3 +10,11 @@ def get_all_classfied_data(query, fromDate, toDate, subreddit,post_limit,comment
 
 
     return reddit_posts_list,reddit_comments_list
+
+
+def get_all_classfied_news(query, fromDate, toDate,limit):
+    
+    search_google_news(query,limit)
+
+
+    return search_google_news
