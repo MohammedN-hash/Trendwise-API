@@ -20,26 +20,24 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
                         user_agent=user_agent,
                         check_for_async=False)
 
-    # set up the search query
-    query = query
-    # specify a specific subreddit
-    subreddit = subreddit  
+    post_limit = max(5, min(50, post_limit))  # Set the limit within the range of 5 to 50
+    comment_limit = max(5, min(50, comment_limit))  # Set the limit within the range of 5 to 50
 
     # set up the time range for the search
     last_week = int((dt.datetime.now() - dt.timedelta(days=7)).timestamp())
     start_epoch = int(dt.datetime.timestamp(dt.datetime.strptime(fromDate, '%Y-%m-%d'))) if fromDate != '' else last_week   
     end_epoch = int(dt.datetime.timestamp(dt.datetime.strptime(toDate, '%Y-%m-%d'))) if toDate != '' else int(dt.datetime.now().timestamp())
 
-    comment_limit = comment_limit
 
-    post_limit=int(post_limit)
-    comment_limit=int(comment_limit)
 
-    # perform the search
+
+
+
     # create an empty list to store the data
     posts = []
     comments  = []
     i=0
+    # perform the search
     for post in reddit.subreddit(subreddit).search(query, sort='new',
                                                   limit=post_limit, params={'after': start_epoch, 'before': end_epoch}):
         i=0
@@ -68,5 +66,4 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
                               'ups': comment.ups,
                               'downs': comment.downs,
                               'emotion':get_emotion(comment.body)})
-    # create Pandas DataFrame from the collected data
     return  posts, comments

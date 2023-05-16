@@ -4,14 +4,16 @@ import json
 import re
 from bs4 import BeautifulSoup
 import feedparser
+import time
 
 from emotion_classfication_model.emotion_classfication_model import get_emotion
 
 
-def search_google_news(topic, limit=50):
+def search_google_news(topic, from_date=None, to_date=None, limit=10):
     # Set the API endpoint and parameters
     endpoint = 'https://news.google.com/rss/search?q=' + \
         topic + '&hl=en-US&gl=US&ceid=US:en'
+    limit = max(5, min(50, limit))  # Set the limit within the range of 5 to 50
 
     # Parse the RSS feed from the API
     feed = feedparser.parse(endpoint)
@@ -20,6 +22,15 @@ def search_google_news(topic, limit=50):
     articles = []
     for i, entry in enumerate(feed.entries):
 
+        published_date = entry.published_parsed
+        if published_date >= from_date:
+            continue
+        if published_date <= to_date:
+            continue
+
+
+        if i == limit:
+            break
         content = clean(entry.description)
         if i == limit:
             break
@@ -37,7 +48,7 @@ def search_google_news(topic, limit=50):
     return articles
 
 
-def search_techcrunch(query, limit=10):
+def search_techcrunch(query, from_date=None, to_date=None, limit=10):
     """
     Search for TechCrunch articles based on a query and a date range.
 
@@ -53,6 +64,7 @@ def search_techcrunch(query, limit=10):
     """
 
     API_ENDPOINT = "https://techcrunch.com/wp-json/wp/v2/posts"
+    limit = max(5, min(50, limit))  # Set the limit within the range of 5 to 50
 
     query_params = {"search": query, "per_page": limit}
 
@@ -64,6 +76,13 @@ def search_techcrunch(query, limit=10):
             print("No articles found.")
         else:
             for article in articles:
+
+                published_date = article["date"]
+                published_date=time.strptime(published_date, '%Y-%m-%dT%H:%M:%S')
+                if published_date >= from_date:
+                    continue
+                if published_date <= to_date:
+                    continue
 
                 title = article["title"]["rendered"]
                 link = article["link"]
@@ -87,12 +106,13 @@ def search_techcrunch(query, limit=10):
     return artical_list
 
 
-def search_wired_articles(topic, limit=10, page=1):
+def search_wired_articles(topic, from_date=None, to_date=None, limit=10):
     # Set the API endpoint and parameters
     endpoint = 'https://www.wired.com/wp-json/wp/v2/posts'
+    limit = max(5, min(50, limit))  # Set the limit within the range of 5 to 50
+
     params = {
         'per_page': limit,     # Number of articles to fetch
-        'page': page,          # Page number (starting from 1)
         'orderby': 'date',  # Order by publish date
         'search': topic    # Search for articles on this topic
     }
@@ -110,6 +130,13 @@ def search_wired_articles(topic, limit=10, page=1):
 
         # Loop through the articles and add their titles and links to the list
         for article in articles:
+
+            published_date=article["date"]
+            published_date=time.strptime(published_date,'%Y-%m-%dT%H:%M:%S')
+            if published_date >= from_date:
+                continue
+            if published_date <= to_date:
+                continue
 
             title = article['title']['rendered']
             link = article['link']

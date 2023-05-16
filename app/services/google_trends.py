@@ -1,11 +1,10 @@
 import datetime as dt
 from pytrends.request import TrendReq
-import pandas as pd
 from fastapi import APIRouter
 router = APIRouter()
 
 
-def get_interest(query, region='', resolution='WORLD', from_date='', to_date='',language='en-US' ):
+def get_trends(query, region='', resolution='WORLD', from_date='', to_date='',language='en-US' ):
 
     if not from_date:
         from_date = (dt.datetime.now() - dt.timedelta(days=30)).strftime('%Y-%m-%d')
