@@ -1,11 +1,10 @@
 import pandas as pd
 from services.util import is_english
 import praw
-import datetime as dt
+from datetime import datetime, timedelta
 from emotion_classfication_model.emotion_classfication_model import  get_emotion
 
 #Reddit Authentication
-
 CLIENT_ID='mLBpma4aso8gX60SizAjjA'
 SECRET_TOKEN ='TkUYeICJW0X3aEuRch-jFwkLkYO10w'
 username='moanwereryani'
@@ -13,8 +12,8 @@ password='5ubSTC5bwAndYbW'
 base_url = 'https://www.reddit.com/'
 user_agent='EmoMetrics0.1'
 
-def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',post_limit = 100,comment_limit=100):
-    # set up your Reddit API credentials
+def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',post_limit = 50,comment_limit=50):
+    # set up  Reddit API credentials
     reddit = praw.Reddit(client_id=CLIENT_ID,
                         client_secret=SECRET_TOKEN,
                         user_agent=user_agent,
@@ -22,13 +21,13 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
 
     post_limit = max(5, min(50, post_limit))  # Set the limit within the range of 5 to 50
     comment_limit = max(5, min(50, comment_limit))  # Set the limit within the range of 5 to 50
+    
+    
+    # set up default time if not selected bu user
+    last_week = datetime.now() - timedelta(days=7)
 
-    # set up the time range for the search
-    last_week = int((dt.datetime.now() - dt.timedelta(days=7)).timestamp())
-    start_epoch = int(dt.datetime.timestamp(dt.datetime.strptime(fromDate, '%Y-%m-%d'))) if fromDate != '' else last_week   
-    end_epoch = int(dt.datetime.timestamp(dt.datetime.strptime(toDate, '%Y-%m-%d'))) if toDate != '' else int(dt.datetime.now().timestamp())
-
-
+    start_epoch = fromDate if fromDate != '' else last_week
+    end_epoch = toDate if toDate != '' else datetime.now()
 
 
 
