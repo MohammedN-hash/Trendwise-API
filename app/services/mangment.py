@@ -9,8 +9,8 @@ def get_classfied_social_networks(query, fromDate, toDate, subreddit, post_limit
         comment_limit = int(comment_limit)  
        
         # Format dates 
-        toDate = datetime.strptime(toDate, '%Y-%m-%d') if toDate != '' else None
-        fromDate = datetime.strptime(fromDate, '%Y-%m-%d') if fromDate != '' else None
+        toDate = datetime.datetime.strptime(toDate, '%Y/%m/%d') if toDate != '' else None
+        fromDate = datetime.datetime.strptime(fromDate, '%Y/%m/%d') if fromDate != '' else None
 
         reddit_posts_list, reddit_comments_list = get_reddits_with_comments(
             query, fromDate=fromDate, toDate=toDate, subreddit=subreddit, post_limit=post_limit, comment_limit=comment_limit
