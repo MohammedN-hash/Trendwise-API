@@ -25,32 +25,29 @@ def search_google_news(topic, from_date=None, to_date=None, limit=10):
         articles = []
         for i, entry in enumerate(feed.entries):
 
+            # Format date
             published_date = entry.published_parsed
-            print(published_date)
             published_date =datetime(*published_date[:6])
-            print(published_date)
+            # check date range is between the selected intervel
+            check_date=from_date <= published_date <= to_date
 
-            if published_date >= from_date:
-                continue
-            if published_date <= to_date:
-                continue
+            if check_date:
 
+                if i == limit:
+                    break
+                content = clean(entry.description)
+                if i == limit:
+                    break
+                article = {
+                    'title': entry.title,
+                    'link': entry.link,
+                    'content': content,
+                    'published': entry.published,
+                    'title_emotion': get_emotion(entry.title),
+                    'content_emotion': get_emotion(content)
 
-            if i == limit:
-                break
-            content = clean(entry.description)
-            if i == limit:
-                break
-            article = {
-                'title': entry.title,
-                'link': entry.link,
-                'content': content,
-                'published': entry.published,
-                'title_emotion': get_emotion(entry.title),
-                'content_emotion': get_emotion(content)
-
-            }
-            articles.append(article)
+                }
+                articles.append(article)
 
         return articles
     except Exception as e:
@@ -86,33 +83,30 @@ def search_techcrunch(query, from_date=None, to_date=None, limit=10):
 
                 for article in articles:
 
+                    # Format date
                     published_date = article["date"]
-                    print(published_date)
-                    print(type(published_date))
-
                     date_format = '%Y-%m-%dT%H:%M:%S'
                     published_date = datetime.strptime(published_date, date_format)
-                    print(type(published_date))
-                    if published_date >= from_date:
-                        continue
-                    if published_date <= to_date:
-                        continue
+                    # check date range is between the selected intervel
+                    check_date=from_date <= published_date <= to_date
 
-                    title = article["title"]["rendered"]
-                    link = article["link"]
-                    date = article["date"]
-                    content = clean(article['content']['rendered'][:500])
-                    title_emotion = get_emotion(title),
-                    content_emotion = get_emotion(content)
+                    if check_date:
 
-                    artical_list.append({
-                        'title': title,
-                        'link': link,
-                        'content': content,
-                        'published': date,
-                        'title_emotion': title_emotion,
-                        'content_emotion': content_emotion
-                    })
+                        title = article["title"]["rendered"]
+                        link = article["link"]
+                        date = article["date"]
+                        content = clean(article['content']['rendered'][:500])
+                        title_emotion = get_emotion(title),
+                        content_emotion = get_emotion(content)
+
+                        artical_list.append({
+                            'title': title,
+                            'link': link,
+                            'content': content,
+                            'published': date,
+                            'title_emotion': title_emotion,
+                            'content_emotion': content_emotion
+                        })
 
             else:
                 print("No articles found.")
@@ -127,7 +121,7 @@ def search_techcrunch(query, from_date=None, to_date=None, limit=10):
         return artical_list
 
 
-def search_wired_articles(topic, from_date=None, to_date=None, limit=10):
+def search_wired_articles(topic, from_date, to_date, limit=10):
     # Set the API endpoint and parameters
     
     try:
@@ -153,36 +147,32 @@ def search_wired_articles(topic, from_date=None, to_date=None, limit=10):
 
             # Loop through the articles and add their titles and links to the list
             for article in articles:
-
+                            
+                # Format date
                 published_date=article["date"]
-                print(published_date)
-                print(type(published_date))
-
                 date_format = '%Y-%m-%dT%H:%M:%S'
                 published_date = datetime.strptime(published_date, date_format)
-                print(type(published_date))
+                # check date range is between the selected intervel
+                check_date=from_date <= published_date <= to_date
 
-                if published_date >= from_date:
-                    continue
-                if published_date <= to_date:
-                    continue
+                if check_date:
+                    print('trye'+  article['title']['rendered'])
+                    title = article['title']['rendered']
+                    link = article['link']
+                    content = clean(article['content']['rendered'][:500])
+                    date = article["date"]
+                    title_emotion = get_emotion(title),
+                    content_emotion = get_emotion(content)
 
-                title = article['title']['rendered']
-                link = article['link']
-                content = clean(article['content']['rendered'][:500])
-                date = article["date"]
-                title_emotion = get_emotion(title),
-                content_emotion = get_emotion(content)
+                    results.append({
+                        'title': title,
+                        'link': link,
+                        'content': content,
+                        'published': date,
+                        'title_emotion': title_emotion,
+                        'content_emotion': content_emotion
 
-                results.append({
-                    'title': title,
-                    'link': link,
-                    'content': content,
-                    'published': date,
-                    'title_emotion': title_emotion,
-                    'content_emotion': content_emotion
-
-                })
+                    })
 
             # Return the list of results
             return results
