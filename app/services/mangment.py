@@ -1,5 +1,5 @@
-from services.reddit import get_reddits_with_comments
-from services.news import search_google_news,search_techcrunch,search_wired_articles
+from services.social_networks_provider import get_reddits_with_comments
+from services.news_provider import search_google_news,search_techcrunch,search_wired_articles
 import datetime
 
 def get_classfied_social_networks(query, fromDate, toDate, subreddit, post_limit, comment_limit): 

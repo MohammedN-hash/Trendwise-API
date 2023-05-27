@@ -1,5 +1,5 @@
 import pandas as pd
-from services.util import is_english
+from services.utilities  import is_english
 import praw
 from datetime import datetime, timedelta
 from emotion_classfication_model.emotion_classfication_model import  get_emotion

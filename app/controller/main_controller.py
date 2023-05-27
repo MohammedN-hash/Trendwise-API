@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from fastapi.encoders import jsonable_encoder
 
 from services.mangment import get_classfied_social_networks,get_classfied_news
-from services.google_trends import get_trends
+from services.google_trends_provider import get_trends
 
 
 

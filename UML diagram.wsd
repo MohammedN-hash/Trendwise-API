@@ -1,0 +1,75 @@
+@startuml
+
+title TrendWise API UML Diagram
+
+class FastAPI {
+    - title: string
+    - description: string
+    - version: string
+    + add_middleware()
+    + include_router()
+    + get()
+}
+
+class CORSMiddleware {
+    + __init__()
+}
+
+class APIRouter {
+    + __init__()
+    + get()
+}
+
+class main_controller {
+    + get_social_networks()
+    + get_google_trend()
+    + get_news()
+}
+
+class mangment {
+    + get_classfied_social_networks()
+    + get_classfied_news()
+}
+class social_networks_provider {
+    + get_reddit()
+}
+class google_trends_provider {
+    + get_trends()
+}
+
+
+class emotion_classfication_model {
+    + get_emotion()
+}
+
+class news_provider.py {
+  + search_google_news(): List[str]
+  + search_techcrunch_articles(): List[str]
+  + search_wired_articles(): List[str]
+}
+FastAPI --> CORSMiddleware: uses
+FastAPI --> APIRouter: includes
+FastAPI --> main_controller: includes
+main_controller --> mangment: uses
+mangment --> social_networks_provider: uses
+mangment --> news_provider: uses
+main_controller --> google_trends_provider: uses
+google_trends_provider --> emotion_classfication_model: uses
+social_networks_provider --> emotion_classfication_model: uses
+news_provider --> emotion_classfication_model: uses
+
+note bottom of FastAPI: Main Application
+
+note bottom of CORSMiddleware: Middleware for CORS handling
+
+note bottom of APIRouter: Router for handling API routes
+
+note bottom of main_controller: Controller for retrieving data
+
+note bottom of mangment: Service for managing data
+
+note bottom of google_trends_provider: Service for retrieving Google Trends data
+
+note bottom of emotion_classfication_model: Service for emotion classification
+
+@enduml
