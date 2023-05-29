@@ -44,7 +44,7 @@ async def search_google_news(topic, from_date=None, to_date=None, limit=10):
                 if i == limit:
                     break
                 article = {
-                    'title': entry.title,
+                    'title': clean(entry.title),
                     'link': entry.link,
                     'content': content,
                     'published': entry.published,
@@ -74,8 +74,6 @@ async def search_techcrunch(query, from_date=None, to_date=None, limit=10):
         - link (str)
         - date (str)
     """
-    print('---------------------------2')
-
     try:
         API_ENDPOINT = "https://techcrunch.com/wp-json/wp/v2/posts"
         # Set the limit within the range of 5 to 50
@@ -104,7 +102,7 @@ async def search_techcrunch(query, from_date=None, to_date=None, limit=10):
                     check_date = from_date <= published_date <= to_date
                     if check_date:
 
-                        title = article["title"]["rendered"]
+                        title = clean(article["title"]["rendered"])
                         link = article["link"]
                         date = article["date"]
                         content = clean(article['content']['rendered'][:500])
@@ -162,9 +160,9 @@ async def search_wired_articles(topic, from_date, to_date, limit=10):
 
                 # Check if the published date is within the selected interval
                 if from_date <= published_date <= to_date:
-                    title = article["title"]
+                    title = clean(article["title"])
                     link = article["url"]
-                    content = article.get("content", "")
+                    content = clean(article.get("content", ""))
                     title_emotion = get_emotion(title),
                     content_emotion = get_emotion(content)
 
