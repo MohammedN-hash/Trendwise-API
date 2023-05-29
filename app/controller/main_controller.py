@@ -19,7 +19,7 @@ router = APIRouter(
 @router.get('/social_networks')
 async def get_social_networks(query, from_date, to_date, subreddit,post_limit,comment_limit):
 
-    reddit_posts_list,reddit_comments_list=get_classfied_social_networks(query, from_date, to_date, subreddit,post_limit,comment_limit)
+    reddit_posts_list,reddit_comments_list=await get_classfied_social_networks(query, from_date, to_date, subreddit,post_limit,comment_limit)
     # convert the results to a JSON-serializable format using jsonable_encoder
     results = {
         "posts": jsonable_encoder(reddit_posts_list),

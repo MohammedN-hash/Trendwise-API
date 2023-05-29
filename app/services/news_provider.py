@@ -11,6 +11,7 @@ from emotion_classfication_model.emotion_classfication_model import get_emotion
 
 
 async def search_google_news(topic, from_date=None, to_date=None, limit=10):
+    articles = []
     try:
         # Set the API endpoint and parameters
         endpoint = 'https://news.google.com/rss/search?q=' + \
@@ -27,7 +28,6 @@ async def search_google_news(topic, from_date=None, to_date=None, limit=10):
         feed = feedparser.parse(endpoint)
 
         # Extract the articles from the feed
-        articles = []
         for i, entry in enumerate(feed.entries):
 
             # Format date
