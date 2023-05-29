@@ -12,7 +12,7 @@ password='5ubSTC5bwAndYbW'
 base_url = 'https://www.reddit.com/'
 user_agent='EmoMetrics0.1'
 
-def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',post_limit = 50,comment_limit=50):
+def get_reddits_with_comments(query, from_date='', to_date='', subreddit='all',post_limit = 50,comment_limit=50):
     # set up  Reddit API credentials
     reddit = praw.Reddit(client_id=CLIENT_ID,
                         client_secret=SECRET_TOKEN,
@@ -26,8 +26,8 @@ def get_reddits_with_comments(query, fromDate='', toDate='', subreddit='all',pos
     # set up default time if not selected bu user
     last_week = datetime.now() - timedelta(days=7)
 
-    start_epoch = fromDate if fromDate != '' else last_week
-    end_epoch = toDate if toDate != '' else datetime.now()
+    start_epoch = from_date if from_date != '' else last_week
+    end_epoch = to_date if to_date != '' else datetime.now()
 
 
 

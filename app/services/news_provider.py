@@ -5,18 +5,23 @@ import re
 from bs4 import BeautifulSoup
 import feedparser
 
-from datetime import datetime
-
+from datetime import datetime, timedelta,timezone
 
 from emotion_classfication_model.emotion_classfication_model import get_emotion
 
 
-def search_google_news(topic, from_date=None, to_date=None, limit=10):
+async def search_google_news(topic, from_date=None, to_date=None, limit=10):
     try:
         # Set the API endpoint and parameters
         endpoint = 'https://news.google.com/rss/search?q=' + \
             topic + '&hl=en-US&gl=US&ceid=US:en'
-        limit = max(5, min(50, limit))  # Set the limit within the range of 5 to 50
+        # Set the limit within the range of 5 to 50
+        limit = max(5, min(50, limit))  
+        # set up default time if not selected bu user
+        last_week = datetime.now() - timedelta(days=7)
+        from_date = from_date if from_date != '' else last_week
+        to_date = to_date if to_date != '' else datetime.now()
+
 
         # Parse the RSS feed from the API
         feed = feedparser.parse(endpoint)
@@ -29,7 +34,7 @@ def search_google_news(topic, from_date=None, to_date=None, limit=10):
             published_date = entry.published_parsed
             published_date =datetime(*published_date[:6])
             # check date range is between the selected intervel
-            check_date=from_date <= published_date <= to_date
+            check_date = from_date <= published_date <= to_date
 
             if check_date:
 
@@ -55,7 +60,7 @@ def search_google_news(topic, from_date=None, to_date=None, limit=10):
         return articles
 
 
-def search_techcrunch(query, from_date=None, to_date=None, limit=10):
+async def search_techcrunch(query, from_date=None, to_date=None, limit=10):
     """
     Search for TechCrunch articles based on a query and a date range.
 
@@ -69,9 +74,17 @@ def search_techcrunch(query, from_date=None, to_date=None, limit=10):
         - link (str)
         - date (str)
     """
+    print('---------------------------2')
+
     try:
         API_ENDPOINT = "https://techcrunch.com/wp-json/wp/v2/posts"
-        limit = max(5, min(50, limit))  # Set the limit within the range of 5 to 50
+        # Set the limit within the range of 5 to 50
+        limit = max(5, min(50, limit))  
+        # set up default time if not selected bu user
+        last_week = datetime.now() - timedelta(days=7)
+        from_date = from_date if from_date != '' else last_week
+        to_date = to_date if to_date != '' else datetime.now()
+
 
         query_params = {"search": query, "per_page": limit}
 
@@ -88,8 +101,7 @@ def search_techcrunch(query, from_date=None, to_date=None, limit=10):
                     date_format = '%Y-%m-%dT%H:%M:%S'
                     published_date = datetime.strptime(published_date, date_format)
                     # check date range is between the selected intervel
-                    check_date=from_date <= published_date <= to_date
-
+                    check_date = from_date <= published_date <= to_date
                     if check_date:
 
                         title = article["title"]["rendered"]
@@ -113,54 +125,46 @@ def search_techcrunch(query, from_date=None, to_date=None, limit=10):
 
         else:
             print(f"Request failed with status code {response.status_code}")
-            print(response.content)
+
 
         return artical_list
     except Exception as e:
         print(f"An error occurred: {e}")
         return artical_list
 
-
-def search_wired_articles(topic, from_date, to_date, limit=10):
-    # Set the API endpoint and parameters
-    
+async def search_wired_articles(topic, from_date, to_date, limit=10):
     try:
-        endpoint = 'https://www.wired.com/wp-json/wp/v2/posts'
+        # Set the API endpoint and parameters
+        api_key = "27fa7d69a2ba4aed8bc11abacae6afcf"
         limit = max(5, min(50, limit))  # Set the limit within the range of 5 to 50
 
-        params = {
-            'per_page': limit,     # Number of articles to fetch
-            'orderby': 'date',  # Order by publish date
-            'search': topic    # Search for articles on this topic
-        }
+        endpoint = f"https://newsapi.org/v2/everything?q={topic}&apiKey={api_key}"
 
         # Send the GET request to the API
-        response = requests.get(endpoint, params=params)
-
+        response = requests.get(endpoint)
+        from_date=from_date.replace(tzinfo=timezone.utc)
+        to_date=to_date.replace(tzinfo=timezone.utc)
         # Check if the request was successful (status code 200)
         results = []
         if response.status_code == 200:
             # Parse the JSON response
-            articles = json.loads(response.content)
+            data = response.json()
+            articles = data["articles"]
 
-            # Create a list to store the article titles and links
-
-            # Loop through the articles and add their titles and links to the list
+            # Loop through the articles and process the desired fields
             for article in articles:
-                            
-                # Format date
-                published_date=article["date"]
-                date_format = '%Y-%m-%dT%H:%M:%S'
-                published_date = datetime.strptime(published_date, date_format)
-                # check date range is between the selected intervel
-                check_date=from_date <= published_date <= to_date
+                published_date = article["publishedAt"]
+                published_date = datetime.fromisoformat(published_date.replace("Z", "+00:00")).replace(tzinfo=None)
 
-                if check_date:
-                    print('trye'+  article['title']['rendered'])
-                    title = article['title']['rendered']
-                    link = article['link']
-                    content = clean(article['content']['rendered'][:500])
-                    date = article["date"]
+                # Convert published date to UTC
+                published_date = published_date.replace(tzinfo=timezone.utc)
+
+
+                # Check if the published date is within the selected interval
+                if from_date <= published_date <= to_date:
+                    title = article["title"]
+                    link = article["url"]
+                    content = article.get("content", "")
                     title_emotion = get_emotion(title),
                     content_emotion = get_emotion(content)
 
@@ -168,19 +172,24 @@ def search_wired_articles(topic, from_date, to_date, limit=10):
                         'title': title,
                         'link': link,
                         'content': content,
-                        'published': date,
+                        'published': published_date,
                         'title_emotion': title_emotion,
                         'content_emotion': content_emotion
-
                     })
 
-            # Return the list of results
-            return results
-        else:
-            print('Error: Failed to fetch articles')
-    except Exception as e:
-        print(f"An error occurred: {e}")
+                    # Break the loop if the desired limit is reached
+                    if len(results) >= limit:
+                        break
+
         return results
+
+    except requests.exceptions.RequestException as e:
+        print("An error occurred while making the request:", str(e))
+        return []
+    except (KeyError, ValueError, TypeError) as e:
+        print("An error occurred while processing the response:", str(e))
+        return []
+    
 
 def clean(content):
 

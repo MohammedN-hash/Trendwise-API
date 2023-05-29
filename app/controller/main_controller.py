@@ -39,13 +39,14 @@ async def get_google_trend(query,region, resolution, from_date, to_date):
 async def get_news(query, from_date, to_date,limit):
 
     # Get data
-    googleNews,techcrunchNews,wired_news=get_classfied_news(query, from_date, to_date,limit)
+    google_news,techcrunch_news,wired_news= await get_classfied_news(query, from_date, to_date,limit)
                                                  
     # convert the results to a JSON-serializable format using jsonable_encoder
+        # Convert the results to a JSON-serializable format using jsonable_encoder
     results = {
-        "google_news": jsonable_encoder(googleNews),
-        "techcrunch_news": jsonable_encoder(techcrunchNews),
-        "wired_news": jsonable_encoder(wired_news)
+        "google_news": jsonable_encoder(await google_news),
+        "techcrunch_news": jsonable_encoder(await techcrunch_news),
+        "wired_news": jsonable_encoder(await wired_news)
     }
     
 
