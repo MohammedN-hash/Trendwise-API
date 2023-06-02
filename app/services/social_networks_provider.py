@@ -44,7 +44,7 @@ def get_reddits_with_comments(query, from_date='', to_date='', subreddit='all',p
           posts.append({'id': post.id,
                       'text': post.title,
                       'author': post.author.name if post.author else '[deleted]',
-                      'created_utc': post.created_utc,
+                      'published': post.created_utc,
                       'num_comments': post.num_comments,
                       'permalink': f"https://www.reddit.com{post.permalink}",
                       'score': post.score,
