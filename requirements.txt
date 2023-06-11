@@ -12,8 +12,10 @@ praw
 
 
 
-transformers
-TensorFlow
+# transformers
+# # TensorFlow
+# torch
+
 
 
 
