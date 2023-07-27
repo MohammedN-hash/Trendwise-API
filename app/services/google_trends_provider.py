@@ -12,7 +12,7 @@ def get_trends(query, region='', resolution='WORLD', from_date='', to_date='',la
         to_date = dt.datetime.now().strftime('%Y-%m-%d')
     print(from_date,to_date)
 
-    pytrend = TrendReq(hl=language)
+    pytrend = TrendReq(hl=language, tz=360, timeout=(10,25), retries=2, backoff_factor=0.1, requests_args={'verify':False})
 
     pytrend.build_payload(kw_list=[query], geo=region, timeframe=f'{from_date} {to_date}')
 
