@@ -5,7 +5,6 @@ from fastapi.encoders import jsonable_encoder
 from services.mangment import get_classfied_social_networks,get_classfied_news
 from services.google_trends_provider import get_trends
 
-from services.latest_news import latest_news
 
 
 router = APIRouter(
@@ -53,22 +52,9 @@ async def get_news(query, from_date, to_date,limit):
 
     return results
 
-
+from typing import List
+from services.latest_news import latest_news
 
 @router.get("/latest-news/")
-async def get_latest_news(genre: str = 'news'):
-    """
-    Get the latest news without a specific topic.
-
-    Args:
-        genre (str): Genre of the news articles. (Optional, default: 'news')
-
-    Returns:
-        List of article objects, where each object contains the following fields:
-        - title (str)
-        - link (str)
-        - content (str)
-        - published (datetime)
-        - genre (str)
-    """
-    return await latest_news(genre)
+async def get_latest_news(category: str = '', limit: int = 10):
+    return await latest_news(category=category, limit=limit)
